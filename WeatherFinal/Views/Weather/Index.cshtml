@@ -1,0 +1,70 @@
+﻿@model WeatherFinal.ViewModels.Weathervm
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Sample Project</h1>
+
+<h4>Weather Endpoint</h4>
+<hr />
+    <div class="form">
+
+              <div class="dx-fieldset">
+                <div class="dx-field">
+                    <div class="dx-field-label">City</div>
+                    <div class="dx-field-value">
+                        @(Html.DevExtreme().TextBoxFor(m => m.title).Placeholder("Enter City Here"))
+                    </div>
+                </div>
+                <div class="dx-field">
+                    <div class="dx-field-label">Max Temp</div>
+                    <div class="dx-field-value">
+                        @(Html.DevExtreme().TextBoxFor(m => m.the_temp).Disabled(true))
+                    </div>
+                </div>
+                <div class="dx-field">
+                    <div class="dx-field-value">
+                        @(Html.DevExtreme().TextBoxFor(m => m.weather_state_abbr).Visible(false))
+                    </div>
+                </div>
+                <div class="dx-field">
+                    <div class="fx-field-label">Weather State</div>
+                    <div class="dx-field-value">
+                        <img src="" id="image" />
+                    </div>
+                </div>
+                <div class="dx-field">
+                    @(Html.DevExtreme().Button().Content("Get Weather").ID("Get"))
+                </div>
+                
+            </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#Get").click(function () {
+
+                var filter = $("#title").val();
+                //alert(filter);
+                $.ajax({
+                    type: "GET",
+                    url: "/Weather/Index",
+                    data: {filter: filter},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        $("#title").val(response.title);
+                        $("#the_temp").val(response.the_temp);
+                        $("#weather_state_abbr").val(response.weather_state_abbr);
+                        var imgsrc = "https://www.metaweather.com/static/img/weather/png/64/" + $("#weather_state_abbr").val() + ".png";
+                        $("#image").attr("src", imgsrc);
+                    }
+                });
+            });
+            })
+    </script>
+}
